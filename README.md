@@ -14,28 +14,28 @@ Winners then pull their proportional share of the pool.
 ## Architecture
 
 ```
-                 createMarket()                    ┌──────────────────────────┐
-   user  ─────────────────────────────────────────▶│  RitualPredict.sol       │
-   user  ─────────── bet(id, YES|NO) ─────────────▶│                          │
-                                                   │  markets, pools, stakes  │
-                                     schedule() ◀──┤                          │
-                                                   └──────────────────────────┘
-    ┌─────────────────────────────┐                     ▲              │
-    │ Scheduler  0x56e7…D58B      │  onScheduledResolve │              │ deposit()
-    │ system contract             │─────────────────────┘              ▼
-    │ fires at resolveBlock,      │                        ┌────────────────────────┐
-    │ 3 attempts, 200 blocks apart│                        │ RitualWallet 0x532F…   │
-    └─────────────────────────────┘                        │ prepaid execution fees │
-                                                           └────────────────────────┘
+                 createMarket()                    â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+   user  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â–¶â”‚  RitualPredict.sol       â”‚
+   user  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ bet(id, YES|NO) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â–¶â”‚                          â”‚
+                                                   â”‚  markets, pools, stakes  â”‚
+                                     schedule() â—€â”€â”€â”¤                          â”‚
+                                                   â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+    â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”                     â–²              â”‚
+    â”‚ Scheduler  0x56e7â€¦D58B      â”‚  onScheduledResolve â”‚              â”‚ deposit()
+    â”‚ system contract             â”‚â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜              â–¼
+    â”‚ fires at resolveBlock,      â”‚                        â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+    â”‚ 3 attempts, 200 blocks apartâ”‚                        â”‚ RitualWallet 0x532Fâ€¦   â”‚
+    â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜                        â”‚ prepaid execution fees â”‚
+                                                           â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
                         inside that one scheduled transaction:
 
-   TEEServiceRegistry 0x9644…  ──pickServiceByCapability(HTTP_CALL)──▶  executor address
-   HTTP precompile    0x0801   ──GET oracleUrl (in a TEE)───────────▶  demo oracle
-   jq  precompile     0x0803   ──jsonPath, outputType=uint256───────▶  observed value
-                                          │
-                                          ▼
-                        observed ⋈ target  →  Resolved(YES|NO)
-                        read failed 3×     →  Invalid (everyone refunds)
+   TEEServiceRegistry 0x9644â€¦  â”€â”€pickServiceByCapability(HTTP_CALL)â”€â”€â–¶  executor address
+   HTTP precompile    0x0801   â”€â”€GET oracleUrl (in a TEE)â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â–¶  demo oracle
+   jq  precompile     0x0803   â”€â”€jsonPath, outputType=uint256â”€â”€â”€â”€â”€â”€â”€â–¶  observed value
+                                          â”‚
+                                          â–¼
+                        observed â‹ˆ target  â†’  Resolved(YES|NO)
+                        read failed 3Ã—     â†’  Invalid (everyone refunds)
 ```
 
 ---
@@ -47,9 +47,9 @@ closes at a _block_. That way "betting is closed" and "the Scheduler woke us" ca
 whatever the chain's block time does. `createMarket` takes human durations in seconds and converts
 them using the `blockTimeMs` fixed at deployment. Nothing on-chain reads `block.timestamp`.
 
-**On Ritual Chain, `block.timestamp` is Unix milliseconds** (≈`1.786e12`), not seconds — verified
+**On Ritual Chain, `block.timestamp` is Unix milliseconds** (â‰ˆ`1.786e12`), not seconds â€” verified
 against the live chain, not assumed. That is a good reason to avoid it entirely, which this contract
-does. Measured block time was ≈195 ms when this was written; run
+does. Measured block time was â‰ˆ195 ms when this was written; run
 `npx hardhat run scripts/block-time.ts` to check it for yourself.
 
 **A failed oracle read is never a NO.** `onScheduledResolve` treats a precompile failure, a non-200
@@ -68,10 +68,10 @@ executor cannot sink a market. The callback is idempotent, so a leftover executi
 `TEEServiceRegistry.pickServiceByCapability(HTTP_CALL, true, seed, 8)` at resolution time.
 
 **Payouts are pull-based and loop-free.** `claimWinnings` computes
-`stake × totalPool ÷ winningPool` for the caller only. Integer division leaves sub-wei dust in the
+`stake Ã— totalPool Ã· winningPool` for the caller only. Integer division leaves sub-wei dust in the
 contract; that is deliberate and negligible.
 
-**Empty winning side → refundable.** Pari-mutuel has no denominator when nobody backed the winning
+**Empty winning side â†’ refundable.** Pari-mutuel has no denominator when nobody backed the winning
 answer, so the market records the outcome and observed value, then becomes `Invalid` so everyone
 takes their stake back.
 
@@ -103,6 +103,18 @@ betting model is plain pari-mutuel: two running totals and one mapping per side.
 
 ## Reference
 
-- Ritual Chain docs — <https://docs.ritualfoundation.org>
-- dApp skills — <https://github.com/ritual-foundation/ritual-dapp-skills>
-- Explorer — <https://explorer.ritualfoundation.org> · Faucet — <https://faucet.ritualfoundation.org>
+- Ritual Chain docs â€” <https://docs.ritualfoundation.org>
+- dApp skills â€” <https://github.com/ritual-foundation/ritual-dapp-skills>
+- Explorer â€” <https://explorer.ritualfoundation.org> Â· Faucet â€” <https://faucet.ritualfoundation.org>
+
+---
+
+## Workshop completion status
+
+Workshop #2 was completed locally by reviewing the RitualPredict architecture, market lifecycle, Scheduler integration, RitualWallet execution funding, TEE / HTTP / jq resolution path, and supplied operational scripts.
+
+The smart contracts compile successfully with Solidity 0.8.28.
+
+Onchain deployment was not performed because the Ritual testnet used by the workshop was no longer available at the time of completion.
+
+See [WORKSHOP_COMPLETION.md](./WORKSHOP_COMPLETION.md) for the detailed completion record and repository test-suite observations.
