@@ -109,6 +109,61 @@ betting model is plain pari-mutuel: two running totals and one mapping per side.
 
 ---
 
+## Proof of Building
+
+This fork extends the Workshop #2 starter with original implementation and local integration testing.
+
+### What was added
+
+- Completed self-resolving prediction market core
+- Market creation and validation
+- Binary YES / NO staking
+- Ritual Scheduler integration
+- Scheduled autonomous resolution
+- TEE executor discovery
+- HTTP oracle response handling
+- jq oracle value extraction
+- Comparator-based outcome resolution
+- Winner payout and refund handling
+- Double-claim protection
+- Local Ritual system mocks
+- End-to-end Hardhat lifecycle test
+
+### Local Ritual simulation
+
+Because the workshop Ritual testnet was unavailable, local mocks were created for the Ritual system components used by `RitualPredict`:
+
+- MockScheduler
+- MockTEERegistry
+- MockRitualWallet
+- MockHttpPrecompile
+- MockJqPrecompile
+
+The mock runtime is injected at the canonical Ritual system addresses expected by the contract.
+
+### Verified lifecycle
+
+The local integration test demonstrates:
+
+Market creation → YES/NO staking → scheduled resolution → TEE selection → HTTP oracle response → jq extraction → outcome resolution → winner payout → double-claim rejection.
+
+Run:
+
+```bash
+cd hardhat
+npx hardhat test test/RitualPredict.local.ts
+```
+
+A successful local run finishes with:
+
+```text
+FULL LOCAL MARKET FLOW PASSED
+1 passing
+```
+
+---
+
+
 ## Workshop completion status
 
 Workshop #2 was completed locally by reviewing the RitualPredict architecture, market lifecycle, Scheduler integration, RitualWallet execution funding, TEE / HTTP / jq resolution path, and supplied operational scripts.
